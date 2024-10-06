@@ -1,30 +1,49 @@
-!DOCTYPE html
-html lang=en
-head
-    meta charset=UTF-8
-    meta name=viewport content=width=device-width, initial-scale=1.0
-    titleMQTT Web Apptitle
-    script src=httpscdnjs.cloudflare.comajaxlibspaho-mqtt1.1.0mqttws31.jsscript
-    script src=mqtt.js deferscript
-    style
-        body {
-            font-family Arial, sans-serif;
-            margin 20px;
-            text-align center;
-        }
-        #messages {
-            border 1px solid #ccc;
-            padding 10px;
-            margin-top 10px;
-            max-height 200px;
-            overflow-y scroll;
-        }
-    style
-head
-body
-    h1MQTT Web Apph1
-    input type=text id=message placeholder=Enter message
-    button onclick=publishMessage()Publishbutton
-    div id=messagesdiv
-body
-html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>My Cool GitHub Page</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="header">
+    <nav class="navbar">
+      <div class="logo">MyLogo</div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="hero">
+      <h1>Welcome to My Cool GitHub Page</h1>
+      <p>Building cool things on the web.</p>
+      <a href="#portfolio" class="btn">Explore My Work</a>
+    </div>
+  </header>
+
+  <section id="about" class="about-section">
+    <h2>About Me</h2>
+    <p>This is where you can write something about yourself, your projects, or your passions.</p>
+  </section>
+
+  <section id="portfolio" class="portfolio-section">
+    <h2>Portfolio</h2>
+    <div class="gallery">
+      <div class="gallery-item">Project 1</div>
+      <div class="gallery-item">Project 2</div>
+      <div class="gallery-item">Project 3</div>
+    </div>
+  </section>
+
+  <footer id="contact" class="footer">
+    <h2>Contact Me</h2>
+    <p>Feel free to reach out via <a href="mailto:youremail@example.com">email</a> or find me on social media.</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
