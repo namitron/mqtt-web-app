@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MQTT Dashboard</title>
+    <title>MQTT Dashboard with Publish & Dynamic Topics</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,42 +20,97 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        .section {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>MQTT Dashboard</h1>
+
+    <div class="section">
+        <h2>Subscribe to Topic</h2>
+        <input type="text" id="subscribeTopic" placeholder="Enter topic to subscribe" />
+        <button onclick="subscribeToTopic()">Subscribe</button>
+    </div>
+
     <div id="data">Waiting for MQTT data...</div>
+
+    <div class="section">
+        <h2>Publish to Topic</h2>
+        <input type="text" id="publishTopic" placeholder="Enter topic to publish" />
+        <input type="text" id="publishMessage" placeholder="Enter message" />
+        <button onclick="publishMessage()">Publish</button>
+    </div>
 
     <script src="https://unpkg.com/paho-mqtt/mqttws31.min.js"></script>
     <script>
-        // Konfigurasi koneksi MQTT
-        const client = new Paho.MQTT.Client('broker.hivemq.com', 8000, 'clientId-' + Math.random());
+        let client;
+        let currentTopic = '';
 
-        // Fungsi ketika berhasil terkoneksi
+        // MQTT connection options
+        function connectMQTT() {
+            client = new Paho.MQTT.Client('broker.hivemq.com', 8000, 'clientId-' + Math.random());
+
+            // Event handlers
+            client.onMessageArrived = onMessageArrived;
+            client.onConnectionLost = onConnectionLost;
+
+            // Connect to broker
+            client.connect({
+                onSuccess: onConnect,
+                onFailure: function (error) {
+                    console.log("Connection failed: " + error.errorMessage);
+                }
+            });
+        }
+
+        // On successful connection
         function onConnect() {
             console.log("Connected to broker");
-            client.subscribe('myTopic');  // Ganti 'myTopic' dengan topik MQTT yang ingin kamu dengarkan
         }
 
-        // Fungsi ketika pesan diterima
+        // Called when a message arrives
         function onMessageArrived(message) {
             console.log("Message arrived: " + message.payloadString);
-            document.getElementById("data").innerHTML = "MQTT Data: " + message.payloadString;
+            document.getElementById("data").innerHTML = "MQTT Data from '" + message.destinationName + "': " + message.payloadString;
         }
 
-        // Fungsi ketika koneksi terputus
+        // Called when the connection is lost
         function onConnectionLost(responseObject) {
             if (responseObject.errorCode !== 0) {
                 console.log("Connection lost: " + responseObject.errorMessage);
             }
         }
 
-        // Menghubungkan event handler dengan client
-        client.onMessageArrived = onMessageArrived;
-        client.onConnectionLost = onConnectionLost;
+        // Subscribe to a topic
+        function subscribeToTopic() {
+            const topic = document.getElementById('subscribeTopic').value;
+            if (currentTopic) {
+                client.unsubscribe(currentTopic);
+            }
+            currentTopic = topic;
+            client.subscribe(topic);
+            console.log("Subscribed to topic: " + topic);
+            document.getElementById("data").innerHTML = "Subscribed to topic: " + topic;
+        }
 
-        // Koneksi ke broker
-        client.connect({ onSuccess: onConnect });
+        // Publish a message to a topic
+        function publishMessage() {
+            const topic = document.getElementById('publishTopic').value;
+            const message = document.getElementById('publishMessage').value;
+            const mqttMessage = new Paho.MQTT.Message(message);
+            mqttMessage.destinationName = topic;
+            client.send(mqttMessage);
+            console.log("Published message to topic: " + topic);
+        }
+
+        // Connect on page load
+        connectMQTT();
     </script>
 </body>
 </html>
